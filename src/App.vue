@@ -9,22 +9,46 @@
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <Container />
+  <VueContainer :게시물="게시물"/>
+  <button @click="more">더보기</button>
 
   <div class="footer">
     <ul class="footer-button-plus">
       <input type="file" id="file" class="inputfile" />
       <label for="file" class="input-plus">+</label>
     </ul>
- </div>
-</template>
+  </div>
+</template> 
 
 <script>
+// import 3스텝
+import VueContainer from './components/VueContainer.vue';
+import postdata from './assets/postdata';
+import axios from 'axios';
 
 export default {
   name: 'App',
+  data(){
+    return {
+      게시물 : postdata,
+    }
+  },
   components: {
-
+    //둘 다 표기법 가능
+    //Container : Container,
+    VueContainer,
+  },
+  ////더보기에 대한 사용자 정의함수
+  methods:{
+    more(){
+      axios.get('https://codingapple1.github.io/vue/more1.json')
+          .then((data)=>{
+            //alert('success');
+            console.log(data);
+            console.log(data.data);
+            this.게시물.push(data.data);
+          })
+    }
   }
 }
 </script>
