@@ -9,7 +9,7 @@
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <VueContainer :게시물="게시물"/>
+  <VueContainer :게시물="게시물" :step="step"/>
   <button @click="more">더보기</button>
 
   <div class="footer">
@@ -30,6 +30,7 @@ export default {
   name: 'App',
   data(){
     return {
+      step : 0,
       게시물 : postdata,
     }
   },
@@ -48,7 +49,11 @@ export default {
             console.log(data.data);
             this.게시물.push(data.data);
           })
-    }
+    },
+    props : {
+      //다 중요해보이는 변수는 그냥 최상단 컨테이너에 저장하는 게 좋음 
+      step : step,
+    },
   }
 }
 </script>
