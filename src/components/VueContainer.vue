@@ -8,7 +8,7 @@
         -->
         <!-- <VuePost :게시물="게시물[0]"/>
         <VuePost :게시물="게시물[1]"/> -->
-        <VuePost :게시물="게시물[i]" v-for="(obj,i) in 게시물" :key="i"/>
+        <!-- <VuePost :게시물="게시물[i]" v-for="(obj,i) in 게시물" :key="i"/> -->
         <!-- <VuePost/>
         <VuePost/> -->
         
@@ -33,7 +33,8 @@
         <!-- 글작성페이지 -->
         <div class="upload-image"></div>
         <div v-if="step == 2" class="write">
-            <textarea class="write-box">write!</textarea>
+            <!--하위 컴포넌트에서 상위 컴포넌트로 데이터를 보낼 때-->
+            <textarea @input="$emit('write', $event.target.value)" class="write-box">write!</textarea> 
         </div>    
     </div>
 </template>
@@ -50,7 +51,8 @@ export default {
         
         //게시물이라는 Key값의 종류를 정해주자. 
         게시물 : Array,
-        step : step,
+        //부모App.vue가 갖고 있는 데이터를 props에서 가져옴. 
+        step : Number,
     }
 }
 </script>
