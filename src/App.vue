@@ -4,17 +4,48 @@
       <li>Cancel</li>
     </ul>
     <ul class="header-button-right">
-      <li>Next</li>
+      <li v-if="step==1" >Next</li>
+      <li v-if="step==2" @click="publish">Next</li>
     </ul>
+    
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <VueContainer :게시물="게시물"/>
+  <!-- vueX의 데이터 바인딩하는 방법은 $ 달러 표시를 사용 -->
+  <h4> Hello {{ $store.state.name }}</h4>
+  <!-- 아래와 같이 주석처리된 방법은 좋지 않고 지양한다. -->
+  <!-- <button @click="$store.state.name = '박'"> 버튼</button> -->
+  <!-- VueX 이벤트 핸들러
+      (1) mutatiosn의 함수는 commit()을 쓴다.
+      (2) VueX는 $ 달러표시를 쓴다. 
+      (3) actions의 함수는 dispatch()를 쓴다. 
+  -->
+  <button @click="$store.commit('이름변경')"> button </button>
+
+  <h4> Hi {{ store.state.age }}</h4>
+  <!-- 
+    '나이증가' 옆에 data를 넣어주면 payload라고 해서 이게 store.js로 넘어감
+  -->
+  <button @click="$store.commit('나이증가', 10)"> button </button>
+
+  <!-- vueX 국룰 
+    오만가지의 컴포넌트에서 가져다 쓸 수 있기 때문에 
+    상태변경을 할 때는 컴포넌트에서 직접하면 안됨. state 수정시
+    1. 미리 store.js에 수정방법을 정의해두고
+    2. 그 방법을 컴포넌트에서 소환해서 수정해야함. 
+  -->
+
+  <p> {{ $store.state.more }}</p>
+  <button @click="$store.dispatch('getData')"> 더보기 버튼 </button>
+
+
+  <VueContainer :게시물="게시물" :step="step"/>
   <button @click="more">더보기</button>
 
   <div class="footer">
     <ul class="footer-button-plus">
-      <input type="file" id="file" class="inputfile" />
+      <!-- multiple 속성 넣으면 여러 개의 파일을 넣을 수 있다. -->
+      <input @change="upload" multiple type="file" id="file" class="inputfile" />
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
@@ -30,7 +61,10 @@ export default {
   name: 'App',
   data(){
     return {
+      //변수 선언
+      step : 0, //현재 페이지의 step 은 0
       게시물 : postdata,
+      이미지 : '',
     }
   },
   components: {
@@ -48,8 +82,51 @@ export default {
             console.log(data.data);
             this.게시물.push(data.data);
           })
-    }
-  }
+    },
+    publish(){
+      let 내게시물 = {
+        name : 'Junhyeok Choi',
+        userImage : 'https://placeimg.com/100/100/arch',
+        postImage : '',
+        line : 36,
+        date : 'May 15',
+        id : 'justdoitjun',
+        liked : false,
+        content : 'nothing',
+        filter : 'perpetua',
+      };
+      this.게시물.unshift(내게시물);
+      this.step = 0;
+    },
+    write(){
+
+    },
+    upload(e){
+      //target에 있는 모든 파일들을 e.target.files
+      let 파일 = e.target.files;
+      console.log(파일[0]);
+      console.log(파일[0].type);
+      let url = URL.createObjectURL(파일[0]);
+      console.log(url);
+      //다음페이지
+      this.step = 1;
+    },
+ 
+  },
+  //상위 데이터를 하위 데이터로 넣어주는 방법은 props하나.. 2단계 내려가야하면 props 2번
+  //하위 컴포넌트의 데이터를 상위 컴포넌트로 보내주는 것은 custom event
+  //정 아니면 mitt를 씀. 
+
+  //싫으면 Vuex를 쓴다. => 데이터 저장공간
+  //Vuex를 쓰면 모든 컴포너트를 직접 꺼내다 쓸 수 있음. 
+  props : {
+    //다 중요해보이는 변수는 그냥 최상단 컨테이너에 저장하는 게 좋음 
+    //변수명 : 자료형태
+
+    step : Number,
+    게시물 : Array,
+
+  },
 }
 </script>
 
